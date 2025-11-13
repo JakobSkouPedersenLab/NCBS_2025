@@ -1,4 +1,4 @@
-# Welcome to the AIBBC 2025 Bioinformatics and Genomics Workshop
+# Welcome to the NCBS 2025 Bioinformatics and Genomics Workshop
 
 ## Link to the workshop homepage
 
