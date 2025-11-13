@@ -7,6 +7,10 @@
 # 
 #######
 
+################################################################################
+#### PART 1: Setup and Building Model ####
+################################################################################
+
 ## Load libraries ####
 library(tidyverse)       # for tidyverse
 library(tidymodels)      # for tidymodels
@@ -51,7 +55,10 @@ rf_fit
 # Can you interpret the rf_fit? It's a bit hard, because of the abstract
 # nature of the forest. Let's make some performance evaluation to help us.
 
-#### ## PART 3: Performance evaluation ####
+################################################################################
+#### PART 2: Evaluation and Comparison ####
+################################################################################
+
 # add predictions to chd_test
 chd_test_w_pred_rf <- augment(rf_fit, new_data = chd_test)
 

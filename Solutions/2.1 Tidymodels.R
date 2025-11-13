@@ -6,6 +6,10 @@
 # 
 #######
 
+################################################################################
+#### PART 1: Setup and Data Preparation ####
+################################################################################
+
 ## Load packages
 library(tidyverse)       # for tidyverse
 library(tidymodels)      # for tidymodels
@@ -89,7 +93,9 @@ chd_train %>%
 #      response variable chdfate?
 
 
-#### PART 2: Modelling #### 
+################################################################################
+#### PART 2: Building Models ####
+################################################################################ 
 # Now we try to fit a linear regression model to the data. Given that chdfate 
 # is binary, it is not suitable for ordinary regression analysis. We therefore 
 # start by focusing on bmi and ask whether its variation can be explained by 
@@ -146,6 +152,12 @@ ggplot(tidy_data, aes(x = estimate, y = term))+
   theme_classic()
   
 
+################################################################################
+#### PART 3: Testing and Evaluation ####
+################################################################################
+
+# D)
+# Predict BMI for subjects in the TEST data and evaluate the model.
 # D)
 # What does the dot-and-whisker plt show and why is it useful?
 

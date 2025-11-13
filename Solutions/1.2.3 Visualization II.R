@@ -6,6 +6,10 @@
 # 
 ####
 
+################################################################################
+#### PART 1: Advanced Plot Types ####
+################################################################################
+
 # We now begin exploring a subset of the Framingham Heart Study
 # data set. The data set consists of 4,699 observations of 9 variables. You can 
 # read about the data set in the uploaded PDFs and at this website:
@@ -70,6 +74,10 @@ ggplot(chd_500, aes(sex, bmi)) +
 # If time permits try some of the other geoms, selecting relevant types 
 # and combinations of variables based on the cheat sheet overview .
 
+################################################################################
+#### PART 2: Customization ####
+################################################################################
+
 #### Exercises part II ########################################################
 
 # A)
@@ -110,6 +118,10 @@ ggplot(chd_500, aes(sbp, dbp)) +
   ylab("Diastolic blood pressure (mm Hg)") +
   ggtitle("Systolic vs  diastolic blood pressure")
 
+################################################################################
+#### PART 3: Faceting ####
+################################################################################
+
 #### Exercises part III ########################################################
 
 # A)
@@ -142,6 +154,10 @@ ggplot(chd_500, aes(chdfate)) +
 # HINT: position = "fill" works like stacking, but makes each set of stacked bars 
 # the same height. This makes it easier to compare proportions across groups.
 
+
+################################################################################
+#### PART 4: Advanced Topics and Exporting ####
+################################################################################
 
 #### Exercises part IV ########################################################
 

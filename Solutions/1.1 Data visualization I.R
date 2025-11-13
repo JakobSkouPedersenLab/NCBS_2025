@@ -6,7 +6,10 @@
 # 
 ####
 
-#PART 1 — R programming and data visualization#
+################################################################################
+#### PART 1: R Programming Basics ####
+################################################################################
+
 #### Introduction to R-programming
 # Any line starting with a hash-tag is just text! This way,
 # you can leave notes for yourself. Try to make a new line below
@@ -47,6 +50,10 @@ d = mpg
 # data window that pop's up. Just spend a moment to see, that the
 # data looks a lot like a normal excel sheet. Then close the data
 # window on the 'x' and return to this script.
+
+################################################################################
+#### PART 2: ggplot2 Introduction ####
+################################################################################
 
 # Initiate an empty plot with the mpg data
 ggplot(data = mpg)

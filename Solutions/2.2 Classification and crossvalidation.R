@@ -5,6 +5,10 @@
 # Simon Grund Sorensen, Jakob Skou Pedersen, Soren Besenbacher
 #######
 
+################################################################################
+#### PART 1: Data Preparation ####
+################################################################################
+
 ## Load libraries ####
 library(tidyverse)       # for tidyverse
 library(tidymodels)      # for tidymodels
@@ -14,8 +18,6 @@ tidymodels_prefer() #Set tidymodels as the default whenever multiple packages ha
 # load data
 chd_full = read_rds("Data/chd_full.rds")
 skim(chd_full)
-
-#### PART 1 ####
 # Now, let's preprocess our data for modelling
 # First we split the data to save some data for testing our model.
 
@@ -64,7 +66,10 @@ chd_test_baked <- bake(preprocessed_rec, new_data = chd_test)
 glimpse(chd_test_baked)
 
 
-##### PART 2: time to start our modeling career! ####
+################################################################################
+#### PART 2: Model Building and Training ####
+################################################################################
+
 ## define a model type (logistic regression) and engine (glm) #### 
 lr_mod <- 
   logistic_reg() %>% 
@@ -128,7 +133,10 @@ ggplot(chd_aug, aes(x = chdfate, y = .pred_TRUE)) +
 # Is our model able to separate chdfate == T from chdfate == F?
 
 
-#### PART 3 ### Measuring performance
+################################################################################
+#### PART 3: Model Evaluation ####
+################################################################################
+
 # A commonly used measure of model performance is an area-under-the-receiver-operator curve (AUROC or ROC)
 # plot a ROC curve on the test set using autoplot
 chd_aug %>% 
@@ -153,7 +161,10 @@ chd_aug %>%
 # Do you have any thoughts on how it could be improved? 
 
 
-#### PART 4 ####
+################################################################################
+#### PART 4: Cross-Validation ####
+################################################################################
+
 ## cross-validation folds (data subsets) ####
 set.seed(345)
 folds <- vfold_cv(chd_train, v = 10)

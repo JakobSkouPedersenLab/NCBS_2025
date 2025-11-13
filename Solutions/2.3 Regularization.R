@@ -7,6 +7,10 @@
 # 
 #######
 
+################################################################################
+#### PART 1: Setup and Model Definition ####
+################################################################################
+
 ## Load libraries ####
 library(tidyverse)       # for tidyverse
 library(tidymodels)      # for tidymodels
@@ -53,7 +57,10 @@ chd_rec <-
 
 chd_rec
 
-#### PART 1: Regularisation
+################################################################################
+#### PART 2: Hyperparameter Tuning ####
+################################################################################
+
 # tune penalty in lasso regression (mixture = 1)
 lr_reg_mod <- 
   logistic_reg(penalty = tune(), mixture = 1) %>% 
@@ -119,6 +126,10 @@ top_models
 # optimal tuning parameter
 lr_reg_best <- lr_reg_res %>%
   select_best(metric = "roc_auc") #Finds the best tuning parameters to optimize model performance. 
+
+################################################################################
+#### PART 3: Final Model and Evaluation ####
+################################################################################
 
 # D) 
 # What is the difference between "show_best()" and "select_best()"

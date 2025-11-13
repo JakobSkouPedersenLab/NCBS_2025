@@ -5,6 +5,10 @@
 # 
 ####
 
+################################################################################
+#### PART 1: K-Means Clustering ####
+################################################################################
+
 #Load packages
 library(tidyverse)
 library(ggdendro)
@@ -37,6 +41,14 @@ d$Cluster = as.factor(kk$cluster)
 
 ggplot(d, aes(x = .fittedPC1, y = .fittedPC2))+
   geom_point(aes(color = Cluster, shape = ))
+
+################################################################################
+#### PART 2: Hierarchical Clustering ####
+################################################################################
+
+# D)
+# Perform hierarchical clustering with base R 
+# instead of k-means (hclust)
 
 # D)
 # How many clusters are too many? How many are too few?

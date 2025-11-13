@@ -6,6 +6,10 @@
 # 
 ####
 
+################################################################################
+#### PART 1: Reading Data ####
+################################################################################
+
 #Loading necessary packages
 library(tidyverse)
 
@@ -28,6 +32,10 @@ library(readxl)
 d = read_excel("Data/chd_500.xlsx")
 # (Note that if the excel workboook has several sheets, you need to load each sheet separately.
 # This can be achieved by using the "sheet" parameter in "read_excel()")
+
+################################################################################
+#### PART 2: Data Type Conversion and Exporting ####
+################################################################################
 
 #### Exercise 1 ####
 # Load the data through any of the above commands. 

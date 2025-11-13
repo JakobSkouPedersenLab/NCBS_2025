@@ -5,6 +5,10 @@
 # 
 ####
 
+################################################################################
+#### PART 1: Principal Component Analysis (PCA) ####
+################################################################################
+
 #Load packages
 library(tidyverse)
 library(broom)
@@ -68,6 +72,9 @@ ggplot(d_w_pca, aes(x = .fittedPC1, y = .fittedPC2, colour = chdfate)) +
 write.table(d_w_pca, "Data/d_w_pca_SAVED.tsv", sep = "\t", col.names = TRUE, row.names = FALSE)
 
 
+################################################################################
+#### PART 2: t-SNE (Non-Linear Dimension Reduction) ####
+################################################################################
 
 ### tSNE
 
