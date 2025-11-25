@@ -138,7 +138,3 @@ write.table(x = ?, file = "Data/chd_500_formatted.tsv", sep = ?, col.names = TRU
 # - .rds: R's format, preserves all data types perfectly
 # - .csv: Universal format, can be opened in Excel
 # - .tsv: Like CSV but uses tabs, better when data contains commas
-
-################################################################################
-#### PART 2: Inspecting and Converting Data Types ####
-################################################################################

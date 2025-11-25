@@ -29,7 +29,7 @@ print("Hello World")
 
 # Can you see the output in the Console below? Good! Let's try
 # some more commands. Just run each line and see what happens.
-print("Welcome to AIBBC 2025, Bioinformatics and Genomics Workshop!")
+print("Welcome to NCBS 2025, Bioinformatics and Genomics Workshop!")
 
 # In R, we can store information in variables using the <- operator.
 # Let's create a variable called 'my_number' and assign it the value 42:
@@ -64,10 +64,6 @@ summary(my_data$y)
 
 ################################################################################
 #### PART 2: Introduction to ggplot2 ####
-################################################################################
-
-################################################################################
-#### SECTION 2: Introduction to ggplot2 ####
 ################################################################################
 
 # First, we load the tidyverse - an essential collection of packages for data analysis.

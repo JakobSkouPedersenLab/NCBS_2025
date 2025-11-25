@@ -133,11 +133,6 @@ chd_data <- read_rds("Data/chd_full.rds")
 #### SECTION 6: Creating New Variables with mutate() ####
 ################################################################################
 
-
-################################################################################
-#### SECTION 6: Creating New Variables with mutate() ####
-################################################################################
-
 # The mutate() function creates new columns based on existing ones.
 
 # Example: Calculate age in months

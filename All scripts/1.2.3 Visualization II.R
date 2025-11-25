@@ -121,12 +121,6 @@ ggplot(chd_data, aes(sex, bmi)) +
 # ggplot has many built-in color palettes to make your plots more attractive.
 
 
-################################################################################
-#### SECTION 5: Customizing Colors ####
-################################################################################
-
-# ggplot has many built-in color palettes to make your plots more attractive.
-
 # First, let's create a base plot we'll reuse:
 bp_plot <- ggplot(chd_data, aes(sbp, dbp))
 
@@ -177,13 +171,6 @@ ggplot(chd_data, aes(sbp, dbp)) +
 ################################################################################
 #### PART 3: Faceting and Advanced Layouts ####
 ################################################################################
-
-################################################################################
-#### SECTION 7: Faceting - Multiple Subplots ####
-################################################################################
-
-# Faceting creates multiple small plots, one for each category.
-
 
 ################################################################################
 #### SECTION 7: Faceting - Multiple Subplots ####
@@ -294,11 +281,11 @@ mapDK()
 # - Region/municipality names
 # - The data values you want to visualize
 
-# EXERCISE F (ADVANCED BONUS): Plot a map of Kenya
+# EXERCISE F (ADVANCED BONUS): Plot a map of India
 # Resources:
 # - https://www.rpubs.com/spoonerf/countrymapggplot2
-# - Search: "ggplot2 map Kenya"
-# Note: Kenya is much larger than Denmark, so this may require more computing power!
+# - Search: "ggplot2 map India"
+# Note: India is much larger than Denmark, so this may require more computing power!
 
 ################################################################################
 #### CONGRATULATIONS! ####
