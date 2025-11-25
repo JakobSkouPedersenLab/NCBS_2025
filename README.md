@@ -2,7 +2,7 @@
 
 ## Link to the workshop homepage
 
-Visit https://sites.google.com/view/aibbc2025bioinformatics.
+Visit [https://sites.google.com/view/aibbc2025bioinformatics.](https://sites.google.com/view/ncbs-2025-statistical-genomics/home)
 
 ## Exercises
 
