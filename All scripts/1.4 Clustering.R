@@ -33,7 +33,7 @@ library(ggdendro)   # For pretty dendrograms
 ################################################################################
 
 # Load the data with PCA coordinates from the previous module:
-chd_pca <- read_delim("Data/d_w_pca.tsv")
+chd_pca <- read_tsv("Data/depmap_w_pca_SAVED.tsv")
 
 # Examine the data:
 glimpse(chd_pca)
@@ -51,8 +51,8 @@ glimpse(chd_pca)
 # 3. Moving centers to the average of their assigned points
 # 4. Repeating steps 2-3 until convergence
 
-# First, extract only the PCA columns:
-pca_coords <- select(chd_pca, .fittedPC1, .fittedPC2, .fittedPC3, .fittedPC4, .fittedPC5)
+# First, extract only the PCA columns usign select and starts_with():
+pca_coords <- select(chd_pca, starts_with(".fittedPC"))
 
 # EXERCISE A: Perform k-means clustering with 4 clusters
 # Replace the first ? with 'pca_coords' and the second ? with 4
@@ -144,9 +144,50 @@ ggdendrogram(hclust_result) +
 
 # INTERPRETING THE DENDROGRAM:
 # - The y-axis shows the distance at which clusters merge
-# - Each leaf (bottom) is one patient
+# - Each leaf (bottom) is one cell line
 # - Height of branches shows how similar clusters are
 # - Cutting the tree at different heights gives different numbers of clusters
+
+################################################################################
+#### SECTION 7b: Color Leaves by Cancer Lineage ####
+################################################################################
+
+# EXERCISE: "Let's see if the dendrogram separates the cancer lineages"
+# We'll color the leaf labels by `lineage_1` from `chd_pca`.
+# To ensure labels match, set rownames of the PCA matrix to the `.rownames` column.
+
+# 1) Make sure distance/cluster labels correspond to `.rownames`
+#    (Run before dist/hclust if starting fresh; safe to set here too.)
+
+#rownames(pca_coords) <- chd_pca$.rownames
+
+
+# 2) Build dendrogram data and join lineage info for labels
+library(ggdendro)
+library(dplyr)
+
+# Extract the dendrogram data so we can plot in ggplot
+ddata <- ggdendro::dendro_data(hclust_result, type = "rectangle")
+
+# Ensure compatible join key types: coerce `.rownames` in chd_pca to character
+chd_pca <- chd_pca %>% mutate(.rownames = as.character(.rownames))
+
+# Add lineage to the dendrogram labels
+label_df <- ddata$labels %>%
+  rename(.rownames = label) %>%
+  left_join(chd_pca %>% select(.rownames, lineage_1), by = ".rownames")
+
+# 3) Plot: segments in grey, labels colored by lineage  — For now just run the ggplot, 
+# but if you have the time, go through it and undertand each line.
+ggplot() +
+  geom_segment(data = ddata$segments,
+               aes(x = x, y = y, xend = xend, yend = yend),
+               color = "grey50", linewidth = 0.4) +
+  geom_point(data = label_df, aes(x = x, y = 0, color = lineage_1), size = 1) +
+  scale_color_brewer(palette = "Set2") +
+  labs(title = "Dendrogram (Lineage Tick Marks)", color = "Lineage") +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), panel.grid = element_blank())
 
 ################################################################################
 #### SECTION 8: Cutting the Dendrogram ####
@@ -154,28 +195,28 @@ ggdendrogram(hclust_result) +
 
 # We can "cut" the tree at different heights to get clusters:
 
-# Cut at height 11 (few, large clusters):
-clusters_h11 <- cutree(hclust_result, h = 11)
-table(clusters_h11)  # How many patients in each cluster?
+# Cut at height 30 (few, large clusters):
+clusters_h40 <- cutree(hclust_result, h = 40)
+table(clusters_h40)  # How many cell lines in each cluster?
 
-# Cut at height 7.5:
-clusters_h7.5 <- cutree(hclust_result, h = 7.5)
-table(clusters_h7.5)
+# Cut at height 30:
+clusters_h30 <- cutree(hclust_result, h = 30)
+table(clusters_h30)
 
-# Cut at height 5 (many, small clusters):
-clusters_h5 <- cutree(hclust_result, h = 5)
-table(clusters_h5)
+# Cut at height 20 (many, small clusters):
+clusters_h20 <- cutree(hclust_result, h = 20)
+table(clusters_h20)
 
 # EXERCISE: Add cutlines to the dendrogram to visualize different cuts
 ggdendrogram(hclust_result) +
-  geom_hline(yintercept = 11, linetype = "dashed", color = "red") +
-  geom_hline(yintercept = 7.5, linetype = "dashed", color = "blue") +
-  geom_hline(yintercept = 5, linetype = "dashed", color = "green") +
+  geom_hline(yintercept = 40, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = 30, linetype = "dashed", color = "blue") +
+  geom_hline(yintercept = 20, linetype = "dashed", color = "green") +
   labs(title = "Dendrogram with Cut Heights")
 
 # QUESTION: What is a good place to cut the tree? Why?
 # Consider: Which height gives meaningful, interpretable groups?
-# 
+# Bonus challenge: Could you add the same cutlines to the ggplot version?
 
 
 ################################################################################

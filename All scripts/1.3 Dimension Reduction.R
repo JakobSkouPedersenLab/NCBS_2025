@@ -38,15 +38,21 @@ library(Rtsne)      # For t-SNE dimension reduction
 ################################################################################
 
 # Load the CHD dataset
-chd_data <- read_rds("Data/chd_500.rds")
+chd_data <- read.csv("Data/depmap_export_2025-12-01 13_24_31.776975_subsetted.csv")
 glimpse(chd_data)
+
+# Select column lineage_1 and all expression columns
+chd_data <- chd_data %>% select(lineage_1, starts_with("Expression."))
+
+# remove columns that are all NA
+chd_data <- chd_data %>% select(where(~ !all(is.na(.))))
 
 # Remove rows with missing values (required for PCA)
 chd_data <- chd_data %>% filter(complete.cases(.))
 
 # PCA works best with numeric variables. Let's select only numeric health metrics:
 chd_numeric <- chd_data %>% 
-  select(sbp, dbp, scl, age, bmi)
+  select( -lineage_1)
 
 # Verify we have only numeric data:
 glimpse(chd_numeric)
@@ -79,13 +85,13 @@ glimpse(chd_with_pca)
 # names(chd_with_pca)
 
 # Make the plot (you fill in the blanks):
-ggplot(chd_with_pca, aes(x = .fittedPC1, y = .fittedPC2, color = chdfate)) +
+ggplot(chd_with_pca, aes(x = .fittedPC1, y = .fittedPC2, color = lineage_1)) +
   geom_point() +
-  labs(title = "PCA of CHD Patient Data",
+  labs(title = "PCA of DepMap Expression Data",
        x = "First Principal Component",
        y = "Second Principal Component")
 
-# CHECKPOINT: Do you see any separation between patients with and without heart disease?
+# CHECKPOINT: Do you see any separation between different cancer lineages?
 
 ################################################################################
 #### SECTION 5: Understanding Variance Explained ####
@@ -125,14 +131,14 @@ ggplot(variance_explained, aes(x = PC, y = proportion_variance)) +
 #### SECTION 6: Another Look at the PCA Plot ####
 ################################################################################
 
-# EXERCISE D: Create another PCA plot (PC1 vs PC2) colored by chdfate
+# EXERCISE D: Create another PCA plot (PC1 vs PC2) colored by lineage_1
 # This is similar to Exercise A - good practice!
 ggplot(chd_with_pca, aes(x = ?, y = ?, color = ?)) +
   geom_point(size = 2, alpha = 0.6) +
-  labs(title = "PCA: Looking for Disease Patterns")
+  labs(title = "PCA: Looking for cancer lineage")
 
 # EXERCISE E: Interpret the plot
-# Does PCA separate patients with heart disease from those without?
+# Does PCA separate patients by the lineage of their cancer? Does it work for all?
 # Write your observations as a comment below:
 # 
 
@@ -143,7 +149,7 @@ ggplot(chd_with_pca, aes(x = ?, y = ?, color = ?)) +
 
 # EXERCISE F: Save the data with PCA coordinates
 # Replace the ? marks with: "\t" (tab separator) and TRUE
-write.table(chd_with_pca, "Data/d_w_pca_SAVED.tsv", 
+write.table(chd_with_pca, "Data/depmap_w_pca_SAVED.tsv", 
             sep = ?, col.names = ?, row.names = FALSE)
 
 
@@ -196,8 +202,8 @@ tsne_plot_data <- bind_cols(
   tsne_y = tsne_result$Y[, 2]
 )
 
-# EXERCISE J: Create a t-SNE plot colored by heart disease status
-# Replace ? with chdfate
+# EXERCISE J: Create a t-SNE plot colored by lineage
+# Replace ? with lineage_1
 ggplot(tsne_plot_data, aes(x = tsne_x, y = tsne_y, color = ?)) +
   geom_point(size = 2, alpha = 0.6) +
   labs(title = "t-SNE of CHD Patient Data",
