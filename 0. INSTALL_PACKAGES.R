@@ -1,5 +1,8 @@
 install.packages("BiocManager", repos = "https://cloud.r-project.org")
-BiocManager::install("M3C")
+
+# Disable Bioconductor upgrade prompts and package updates
+Sys.setenv(R_BIOC_UPGRADE = "FALSE")
+BiocManager::install("M3C", update = FALSE, ask = FALSE)
 
 packages_to_install = c(
   "tidyverse", "broom", "Rtsne", "tidymodels", "skimr", "ggdendro",
@@ -12,7 +15,7 @@ new_packages = packages_to_install[!(packages_to_install %in% installed.packages
 
 if(length(new_packages) > 0){
   for (pkg in new_packages) {
-    install.packages(pkg, ask = FALSE, Ncpus = 4L)
+    install.packages(pkg, repos = "https://cloud.r-project.org")
   }
 }
 
