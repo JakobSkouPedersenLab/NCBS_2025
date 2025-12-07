@@ -8,7 +8,7 @@ packages_to_install = c(
   "tidyverse", "broom", "Rtsne", "tidymodels", "skimr", "ggdendro",
   "GGally", "dotwhisker", "vip", "ranger", "data.table", "glmnet",
   "gapminder", "riskCommunicator", "pheatmap", "ape", "cluster", "ggpubr",
-  "keras", "patchwork", "keras3"
+  "keras", "patchwork", "keras3", "xgboost"
 )
 
 new_packages = packages_to_install[!(packages_to_install %in% installed.packages()[,"Package"])]
