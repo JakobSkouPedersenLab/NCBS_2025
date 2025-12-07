@@ -33,10 +33,10 @@ library(ggdendro)   # For pretty dendrograms
 ################################################################################
 
 # Load the data with PCA coordinates from the previous module:
-chd_pca <- read_tsv("Data/depmap_w_pca_SAVED.tsv")
+depmap_pca <- read_tsv("Data/depmap_w_pca_SAVED.tsv")
 
 # Examine the data:
-glimpse(chd_pca)
+glimpse(depmap_pca)
 
 # We'll cluster patients based on their PCA coordinates rather than
 # the original variables. This reduces noise and speeds up computation.
@@ -52,7 +52,7 @@ glimpse(chd_pca)
 # 4. Repeating steps 2-3 until convergence
 
 # First, extract only the PCA columns usign select and starts_with():
-pca_coords <- select(chd_pca, starts_with(".fittedPC"))
+pca_coords <- select(depmap_pca, starts_with(".fittedPC"))
 
 # EXERCISE A: Perform k-means clustering with 4 clusters
 # Replace the first ? with 'pca_coords' and the second ? with 4
@@ -69,11 +69,11 @@ names(kmeans_result)
 
 # Add cluster assignments to our data:
 # We convert to factor so ggplot treats it as categorical (for colors)
-chd_pca$cluster_kmeans <- as.factor(kmeans_result$cluster)
+depmap_pca$cluster_kmeans <- as.factor(kmeans_result$cluster)
 
 # EXERCISE B: Plot the clusters in PCA space
 # Replace ? with 'cluster_kmeans'
-ggplot(chd_pca, aes(x = .fittedPC1, y = .fittedPC2)) +
+ggplot(depmap_pca, aes(x = .fittedPC1, y = .fittedPC2)) +
   geom_point(aes(color = ?), size = 2) +
   labs(title = "K-Means Clustering (K=4)",
        x = "PC1", y = "PC2")
@@ -90,17 +90,17 @@ ggplot(chd_pca, aes(x = .fittedPC1, y = .fittedPC2)) +
 
 # Try K = 2:
 kmeans_2 <- kmeans(pca_coords, centers = 2)
-chd_pca$cluster_2 <- as.factor(kmeans_2$cluster)
+depmap_pca$cluster_2 <- as.factor(kmeans_2$cluster)
 
-ggplot(chd_pca, aes(x = .fittedPC1, y = .fittedPC2)) +
+ggplot(depmap_pca, aes(x = .fittedPC1, y = .fittedPC2)) +
   geom_point(aes(color = cluster_2), size = 2) +
   labs(title = "K-Means with K=2")
 
 # Try K = 6:
 kmeans_6 <- kmeans(pca_coords, centers = 6)
-chd_pca$cluster_6 <- as.factor(kmeans_6$cluster)
+depmap_pca$cluster_6 <- as.factor(kmeans_6$cluster)
 
-ggplot(chd_pca, aes(x = .fittedPC1, y = .fittedPC2)) +
+ggplot(depmap_pca, aes(x = .fittedPC1, y = .fittedPC2)) +
   geom_point(aes(color = cluster_6), size = 2) +
   labs(title = "K-Means with K=6")
 
@@ -153,13 +153,13 @@ ggdendrogram(hclust_result) +
 ################################################################################
 
 # EXERCISE: "Let's see if the dendrogram separates the cancer lineages"
-# We'll color the leaf labels by `lineage_1` from `chd_pca`.
+# We'll color the leaf labels by `lineage_1` from `depmap_pca`.
 # To ensure labels match, set rownames of the PCA matrix to the `.rownames` column.
 
 # 1) Make sure distance/cluster labels correspond to `.rownames`
 #    (Run before dist/hclust if starting fresh; safe to set here too.)
 
-#rownames(pca_coords) <- chd_pca$.rownames
+#rownames(pca_coords) <- depmap_pca$.rownames
 
 
 # 2) Build dendrogram data and join lineage info for labels
@@ -169,13 +169,13 @@ library(dplyr)
 # Extract the dendrogram data so we can plot in ggplot
 ddata <- ggdendro::dendro_data(hclust_result, type = "rectangle")
 
-# Ensure compatible join key types: coerce `.rownames` in chd_pca to character
-chd_pca <- chd_pca %>% mutate(.rownames = as.character(.rownames))
+# Ensure compatible join key types: coerce `.rownames` in depmap_pca to character
+depmap_pca <- depmap_pca %>% mutate(.rownames = as.character(.rownames))
 
 # Add lineage to the dendrogram labels
 label_df <- ddata$labels %>%
   rename(.rownames = label) %>%
-  left_join(chd_pca %>% select(.rownames, lineage_1), by = ".rownames")
+  left_join(depmap_pca %>% select(.rownames, lineage_1), by = ".rownames")
 
 # 3) Plot: segments in grey, labels colored by lineage  — For now just run the ggplot, 
 # but if you have the time, go through it and undertand each line.
@@ -224,15 +224,15 @@ ggdendrogram(hclust_result) +
 ################################################################################
 
 # Let's compare k-means and hierarchical clustering:
-chd_pca$cluster_hclust <- as.factor(cutree(hclust_result, k = 4))
+depmap_pca$cluster_hclust <- as.factor(cutree(hclust_result, k = 4))
 
 # Plot both side by side:
 library(patchwork)  # For combining plots
 
-p1 <- ggplot(chd_pca, aes(.fittedPC1, .fittedPC2, color = cluster_kmeans)) +
+p1 <- ggplot(depmap_pca, aes(.fittedPC1, .fittedPC2, color = cluster_kmeans)) +
   geom_point() + labs(title = "K-Means (K=4)")
 
-p2 <- ggplot(chd_pca, aes(.fittedPC1, .fittedPC2, color = cluster_hclust)) +
+p2 <- ggplot(depmap_pca, aes(.fittedPC1, .fittedPC2, color = cluster_hclust)) +
   geom_point() + labs(title = "Hierarchical (K=4)")
 
 p1 + p2

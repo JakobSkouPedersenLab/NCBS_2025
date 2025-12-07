@@ -38,20 +38,20 @@ library(Rtsne)      # For t-SNE dimension reduction
 ################################################################################
 
 # Load the CHD dataset
-chd_data <- read.csv("Data/depmap_export_2025-12-01 13_24_31.776975_subsetted.csv")
-glimpse(chd_data)
+depmap_data <- read.csv("Data/depmap_export_2025-12-01 13_24_31.776975_subsetted.csv")
+glimpse(depmap_data)
 
 # Select column lineage_1 and all expression columns
-chd_data <- chd_data %>% select(lineage_1, starts_with("Expression."))
+depmap_data <- depmap_data %>% select(lineage_1, starts_with("Expression."))
 
 # remove columns that are all NA
-chd_data <- chd_data %>% select(where(~ !all(is.na(.))))
+depmap_data <- depmap_data %>% select(where(~ !all(is.na(.))))
 
 # Remove rows with missing values (required for PCA)
-chd_data <- chd_data %>% filter(complete.cases(.))
+depmap_data <- depmap_data %>% filter(complete.cases(.))
 
 # PCA works best with numeric variables. Let's select only numeric health metrics:
-chd_numeric <- chd_data %>% 
+chd_numeric <- depmap_data %>% 
   select( -lineage_1)
 
 # Verify we have only numeric data:
@@ -70,8 +70,8 @@ pca_result <- prcomp(chd_numeric, scale = TRUE)
 summary(pca_result)
 
 # The augment() function adds PCA coordinates back to the original data
-chd_with_pca <- augment(pca_result, chd_data)
-glimpse(chd_with_pca)
+depmap_with_pca <- augment(pca_result, depmap_data)
+glimpse(depmap_with_pca)
 
 # Note: New columns .fittedPC1, .fittedPC2, etc. contain the PC coordinates
 
@@ -82,10 +82,10 @@ glimpse(chd_with_pca)
 # EXERCISE A: Create a PCA plot showing PC1 vs PC2, colored by heart disease status
 
 # First, let's look at what columns we have:
-# names(chd_with_pca)
+# names(depmap_with_pca)
 
 # Make the plot (you fill in the blanks):
-ggplot(chd_with_pca, aes(x = .fittedPC1, y = .fittedPC2, color = lineage_1)) +
+ggplot(depmap_with_pca, aes(x = .fittedPC1, y = .fittedPC2, color = lineage_1)) +
   geom_point() +
   labs(title = "PCA of DepMap Expression Data",
        x = "First Principal Component",
@@ -133,7 +133,7 @@ ggplot(variance_explained, aes(x = PC, y = proportion_variance)) +
 
 # EXERCISE D: Create another PCA plot (PC1 vs PC2) colored by lineage_1
 # This is similar to Exercise A - good practice!
-ggplot(chd_with_pca, aes(x = ?, y = ?, color = ?)) +
+ggplot(depmap_with_pca, aes(x = ?, y = ?, color = ?)) +
   geom_point(size = 2, alpha = 0.6) +
   labs(title = "PCA: Looking for cancer lineage")
 
@@ -149,7 +149,7 @@ ggplot(chd_with_pca, aes(x = ?, y = ?, color = ?)) +
 
 # EXERCISE F: Save the data with PCA coordinates
 # Replace the ? marks with: "\t" (tab separator) and TRUE
-write.table(chd_with_pca, "Data/depmap_w_pca_SAVED.tsv", 
+write.table(depmap_with_pca, "Data/depmap_w_pca_SAVED.tsv", 
             sep = ?, col.names = ?, row.names = FALSE)
 
 
@@ -197,7 +197,7 @@ tsne_result <- Rtsne(tsne_input, pca = FALSE, check_duplicates = FALSE)
 
 # Combine t-SNE coordinates with the original data:
 tsne_plot_data <- bind_cols(
-  chd_data,
+  depmap_data,
   tsne_x = tsne_result$Y[, 1],
   tsne_y = tsne_result$Y[, 2]
 )
