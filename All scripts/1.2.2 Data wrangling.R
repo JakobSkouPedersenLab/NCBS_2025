@@ -58,15 +58,16 @@ chd_data %>%
 # EXERCISE A: Replace the ? to find how many individuals have a BMI over 50
 # (Hint: look at the variable names above. BMI is stored as 'bmi')
 chd_data %>%
-  filter(? > 50)
+  filter(bmi > 50)
 
 
 # You can also combine multiple conditions using & (AND) or | (OR)
 
 # EXERCISE B: Find individuals over 50 years AND cholesterol (scl) over 300
 # (Hint: use filter() with two conditions connected by &)
-chd_data %>%
-  filter(? & ?)
+date_formatted =
+  chd_data %>%
+  filter(age > 50 & scl > 300)
 
 ################################################################################
 #### SECTION 3: Summarizing Data ####
@@ -81,7 +82,7 @@ chd_data %>%
 # EXERCISE C: Calculate the mean age in the dataset
 # Replace the ? with the appropriate function and variable
 chd_data %>%
-  summarise(mean_age = ?)
+  summarise(mean_age = mean(age))
 
 ################################################################################
 #### SECTION 4: Grouping Data ####
@@ -98,8 +99,8 @@ chd_data %>%
 # Replace the first ? with the grouping variable (sex)
 # Replace the second ? with a summarise statement
 chd_data %>%
-  group_by(?) %>%
-  ?
+  group_by(sex) %>%
+  summarise(mean_age = mean(age))
 
 ################################################################################
 #### SECTION 5: Handling Missing Values (NA) ####

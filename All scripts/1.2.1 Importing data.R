@@ -35,7 +35,7 @@ library(tidyverse)
 
 # .rds files are R's native format - they preserve data types perfectly
 # and load quickly. This is the best format for saving R objects.
-chd_data <- read_rds("Data/chd_500.rds")
+chd_data <- read_rds("../NCBS_2025/Data/chd_500.rds")
 
 # Let's look at the structure of what we just loaded:
 glimpse(chd_data)
@@ -108,10 +108,10 @@ head(chd_data)
 
 # EXERCISE 2: Convert the "chdfate" column to logical (TRUE/FALSE) instead of character
 # Replace both ? marks with: chdfate
-chd_data$? <- as.logical(chd_data$?)
+chd_data$chdfate <- as.logical(chd_data$chdfate)
 
 # Verify the conversion worked:
-glimpse(chd_data$chdfate)
+glimpse(chd_data)
 
 # Common conversion functions:
 # as.logical()  - converts to TRUE/FALSE
@@ -128,7 +128,7 @@ glimpse(chd_data$chdfate)
 # EXERCISE 3: Export your formatted data as a .tsv file
 # Replace the first ? with your data variable name: chd_data
 # Replace the second ? with the separator character: "\t" (tab)
-write.table(x = ?, file = "Data/chd_500_formatted.tsv", sep = ?, col.names = TRUE, row.names = FALSE)
+write.table(x = chd_data, file = "Data/chd_500_formatted.tsv", sep = "\t", col.names = TRUE, row.names = FALSE)
 
 # Other export options:
 # write_csv(chd_data, "Data/chd_500_formatted.csv")  # Export as CSV

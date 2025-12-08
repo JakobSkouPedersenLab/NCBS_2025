@@ -37,7 +37,7 @@ library(Rtsne)      # For t-SNE dimension reduction
 #### SECTION 2: Loading and Preparing Data ####
 ################################################################################
 
-# Load the CHD dataset
+# Load the depmap dataset
 depmap_data <- read.csv("Data/depmap_export_2025-12-01 13_24_31.776975_subsetted.csv")
 glimpse(depmap_data)
 
@@ -51,11 +51,11 @@ depmap_data <- depmap_data %>% select(where(~ !all(is.na(.))))
 depmap_data <- depmap_data %>% filter(complete.cases(.))
 
 # PCA works best with numeric variables. Let's select only numeric health metrics:
-chd_numeric <- depmap_data %>% 
+depmap_numeric <- depmap_data %>% 
   select( -lineage_1)
 
 # Verify we have only numeric data:
-glimpse(chd_numeric)
+glimpse(depmap_numeric)
 
 ################################################################################
 #### SECTION 3: Principal Component Analysis (PCA) ####
@@ -64,7 +64,7 @@ glimpse(chd_numeric)
 # PCA finds new axes (principal components) that capture maximum variation.
 # scale = TRUE standardizes variables so they're on the same scale.
 
-pca_result <- prcomp(chd_numeric, scale = TRUE)
+pca_result <- prcomp(depmap_numeric, scale = TRUE)
 
 # Let's see what PCA found:
 summary(pca_result)
@@ -79,7 +79,7 @@ glimpse(depmap_with_pca)
 #### SECTION 4: Visualizing PCA Results ####
 ################################################################################
 
-# EXERCISE A: Create a PCA plot showing PC1 vs PC2, colored by heart disease status
+# EXERCISE A: Create a PCA plot showing PC1 vs PC2, colored by lineage_1
 
 # First, let's look at what columns we have:
 # names(depmap_with_pca)
@@ -102,7 +102,7 @@ ggplot(depmap_with_pca, aes(x = .fittedPC1, y = .fittedPC2, color = lineage_1)) 
 
 # Create a dataframe with variance information:
 variance_explained <- data.frame(
-  PC = seq_len(ncol(chd_numeric)),  # PC numbers: 1, 2, 3, 4, 5
+  PC = seq_len(ncol(depmap_numeric)),  # PC numbers: 1, 2, 3, 4, 5
   variance = pca_result$sdev^2      # Variance of each PC
 )
 
@@ -126,6 +126,17 @@ ggplot(variance_explained, aes(x = PC, y = proportion_variance)) +
        y = "Proportion of Variance Explained")
 
 # QUESTION: How many PCs do we need to capture most of the variation?
+
+# Calculate the accumulated variance exlained
+variance_explained <- variance_explained %>%
+  mutate(accumulated_variance = cumsum(proportion_variance))
+
+# Exercise D: Create a bar plot showingthe accumulated variance explained by PCs
+ggplot(variance_explained, aes(x = PC, y = accumulated_variance)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Variance Explained by Each Principal Component",
+       y = "Proportion of Variance Explained")
+
 
 ################################################################################
 #### SECTION 6: Another Look at the PCA Plot ####
@@ -163,10 +174,11 @@ write.table(depmap_with_pca, "Data/depmap_w_pca_SAVED.tsv",
 
 # t-SNE (t-Distributed Stochastic Neighbor Embedding) is a non-linear method
 # that's particularly good at revealing clusters and local structure.
-# Unlike PCA, t-SNE can capture complex, non-linear relationships.
+#  Unlike PCA, t-SNE uses a non-linear map from the high-dimensional data 
+# to the low-dimensional representation.
 
 # Prepare the numeric data for t-SNE:
-tsne_input <- chd_numeric
+tsne_input <- depmap_numeric
 
 # Run t-SNE:
 # pca = FALSE means we're not pre-processing with PCA
@@ -206,7 +218,7 @@ tsne_plot_data <- bind_cols(
 # Replace ? with lineage_1
 ggplot(tsne_plot_data, aes(x = tsne_x, y = tsne_y, color = ?)) +
   geom_point(size = 2, alpha = 0.6) +
-  labs(title = "t-SNE of CHD Patient Data",
+  labs(title = "t-SNE of depmap Patient Data",
        x = "t-SNE Dimension 1",
        y = "t-SNE Dimension 2")
 
@@ -225,8 +237,8 @@ ggplot(tsne_plot_data, aes(x = tsne_x, y = tsne_y, color = ?)) +
 # Try running t-SNE on PCA results (recommended for large datasets):
 # tsne_result3 <- Rtsne(pca_result$x, pca = TRUE, check_duplicates = FALSE)
 
-# BONUS: Try with the full dataset (chd_full.rds) if you have time and computing power
-# chd_full <- read_rds("Data/chd_full.rds")
+# BONUS: Try with the full dataset (depmap_full.rds) if you have time and computing power
+# depmap_full <- read_rds("Data/depmap_full.rds")
 # For large datasets, it's best to run t-SNE on PCA results to reduce computation time
 
 ################################################################################

@@ -18,7 +18,7 @@
 # Any line starting with a hash-tag (#) is a comment - just text!
 # Comments help you document your code and leave notes for yourself.
 # Try to make a new line below and write a hashtag followed by a message.
-
+# This is my first comment in R!
 
 
 # Now, let's try to run some code! To run code, move your
@@ -121,7 +121,7 @@ ggplot(data = mpg_data) +
 # EXERCISE 1: Now you try! Replace the '?' to plot 'hwy' on the y-axis
 # (Hint: look at the example above)
 ggplot(data = mpg_data) +
-  geom_point(mapping = aes(x = displ, y = ?))
+  geom_point(mapping = aes(x = displ, y = hwy))
 
 ################################################################################
 #### SECTION 5: Adding More Aesthetics (Color, Size, Shape) ####
@@ -132,11 +132,11 @@ ggplot(data = mpg_data) +
 
 # EXERCISE 2: Replace the ? to make point SIZE reflect the number of cylinders (cyl)
 ggplot(data = mpg_data) + 
-  geom_point(mapping = aes(x = displ, y = hwy, size = ?))
+  geom_point(mapping = aes(x = displ, y = hwy, size = cyl))
 
 # EXERCISE 3: Replace the ? to make point COLOR reflect the number of cylinders (cyl)
 ggplot(data = mpg_data) + 
-  geom_point(mapping = aes(x = displ, y = hwy, color = ?))
+  geom_point(mapping = aes(x = displ, y = hwy, color = cyl))
 
 # CHECKPOINT: What's the difference between these two?
 # aes(color = cyl)          # Maps cylinder data to colors (INSIDE aes)
@@ -156,7 +156,7 @@ ggplot(data = mpg_data) +
 # EXERCISE 4: Make the line dotted by setting linetype parameter.
 # Try values: 1 (solid), 2 (dashed), 3 (dotted), or use "dashed", "dotted"
 ggplot(data = mpg_data) +
-  geom_smooth(mapping = aes(x = displ, y = hwy), linetype = ?)
+  geom_smooth(mapping = aes(x = displ, y = hwy), linetype = 3)
 
 ################################################################################
 #### SECTION 7: Back to Histograms - Adjusting Bins ####
@@ -164,13 +164,13 @@ ggplot(data = mpg_data) +
 
 # EXERCISE 5: Change the geom below from geom_point to geom_histogram
 ggplot(data = mpg_data) + 
-  geom_?(mapping = aes(x = hwy))
+  geom_histogram(mapping = aes(x = hwy))
 
 # Histograms group data into bins. We can control the bin width or number of bins.
 # EXERCISE 6: Set the number of bins to 5
 # (Hint: the parameter is called 'bins')
 ggplot(data = mpg_data) + 
-  geom_histogram(mapping = aes(x = hwy), ? = ?)
+  geom_histogram(mapping = aes(x = hwy), bins = 5)
 
 ################################################################################
 #### SECTION 8: Styling Points - Fixed Colors and Shapes ####
@@ -179,7 +179,7 @@ ggplot(data = mpg_data) +
 # When we set aesthetics OUTSIDE aes(), they apply to ALL points equally.
 # EXERCISE 7: Set color to "red" and shape to "+" (note: these go OUTSIDE aes)
 ggplot(data = mpg_data, aes(x = cty, y = displ)) +
-  geom_point(? , ?)
+  geom_point(color = "red" , shape = "+")
 
 ################################################################################
 #### SECTION 9: Layering Multiple Geoms ####
@@ -190,7 +190,8 @@ ggplot(data = mpg_data, aes(x = cty, y = displ)) +
 # (Hint: use + to add another layer)
 ggplot(data = mpg_data, aes(x = cty, y = displ)) +
   geom_point(color = "red", shape = "+") +
-  ?
+  geom_smooth()
+  
 
 # FINAL STEP: Press Export > Save as PDF to save your visualization!
 
