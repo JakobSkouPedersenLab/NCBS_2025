@@ -237,10 +237,6 @@ ggplot(tsne_plot_data, aes(x = tsne_x, y = tsne_y, color = ?)) +
 # Try running t-SNE on PCA results (recommended for large datasets):
 # tsne_result3 <- Rtsne(pca_result$x, pca = TRUE, check_duplicates = FALSE)
 
-# BONUS: Try with the full dataset (depmap_full.rds) if you have time and computing power
-# depmap_full <- read_rds("Data/depmap_full.rds")
-# For large datasets, it's best to run t-SNE on PCA results to reduce computation time
-
 ################################################################################
 #### KEY TAKEAWAYS ####
 ################################################################################
@@ -251,6 +247,7 @@ ggplot(tsne_plot_data, aes(x = tsne_x, y = tsne_y, color = ?)) +
 # 
 # When to use each:
 # - PCA: Understanding which variables contribute most, quick exploration
-# - t-SNE: Finding hidden clusters, visualizing complex patterns
+# - t-SNE: Finding hidden clusters, visualizing complex patterns, 
+# distances not directly interpretable
 # 
 # Best practice: Often use PCA first, then t-SNE for deeper investigation

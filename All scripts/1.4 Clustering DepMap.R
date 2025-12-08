@@ -26,7 +26,7 @@ library(ggdendro)   # For pretty dendrograms
 
 # Two main approaches:
 # 1. K-means: Partition data into K clusters (you choose K)
-# 2. Hierarchical: Build a tree showing how points group at different scales
+# 2. Hierarchical: Build a tree showing how observations group at different scales
 
 ################################################################################
 #### SECTION 2: Loading Data with PCA Coordinates ####
@@ -46,10 +46,10 @@ glimpse(depmap_pca)
 ################################################################################
 
 # K-means divides data into K clusters by:
-# 1. Randomly placing K "centers"
-# 2. Assigning each point to the nearest center
-# 3. Moving centers to the average of their assigned points
-# 4. Repeating steps 2-3 until convergence
+#  1. Randomly assigning observations to the K cluster classes
+#  2. Calculate the centroid (center) for each class
+#  3. Reassign each observation to the class with the nearest centroid
+#  4. Repeat steps 2 & 3 until convergence (no more changes in cluster class assignments)
 
 # First, extract only the PCA columns usign select and starts_with():
 pca_coords <- select(depmap_pca, starts_with(".fittedPC"))
