@@ -411,6 +411,56 @@ head(fit2_all_genes)
 #
 
 ################################################################################
+#### SECTION 17: Volcano Plot ####
+################################################################################
+
+# A volcano plot is a powerful way to visualize differential expression results.
+# It shows the relationship between:
+#   - Effect size (log fold-change, x-axis)
+#   - Statistical significance (-log10 q-value, y-axis)
+#
+# Genes that are both highly significant AND have a large effect size appear
+# in the upper-left or upper-right corners of the plot.
+
+# Add a column for -log10(q_value) for plotting:
+fit1_all_genes <- fit1_all_genes %>%
+  mutate(neg_log10_q = -log10(q_value))
+
+# Create the volcano plot:
+ggplot(fit1_all_genes, aes(x = Coefficient, y = neg_log10_q)) +
+  geom_point(alpha = 0.5) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "red") +
+  labs(
+    title = "Volcano Plot: Differential Expression (BRCA vs COAD)",
+    x = "Log Fold-Change (Coefficient)",
+    y = "-log10(FDR q-value)"
+  ) +
+  theme_minimal(base_size = 30)
+
+# CHECKPOINT: The horizontal dashed red line marks q = 0.05 (FDR 5%).
+# Points above this line are statistically significant after multiple testing correction.
+
+# EXERCISE Q: Interpreting the Volcano Plot
+# Which genes stand out as both significant and having a large effect size?
+# Are there more up-regulated or down-regulated genes?
+# Write your answer here:
+#
+#
+
+# Optional: Highlight significant genes with color
+ggplot(fit1_all_genes, aes(x = Coefficient, y = neg_log10_q)) +
+  geom_point(aes(color = q_value < 0.05), alpha = 0.5) +
+  scale_color_manual(values = c("grey50", "red"), labels = c("Not Sig.", "FDR < 0.05")) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "red") +
+  labs(
+    title = "Volcano Plot: Differential Expression (BRCA vs COAD)",
+    x = "Log Fold-Change (Coefficient)",
+    y = "-log10(FDR q-value)",
+    color = "Significance"
+  ) +
+  theme_minimal(base_size = 30)
+
+################################################################################
 #### KEY TAKEAWAYS ####
 ################################################################################
 
@@ -424,3 +474,13 @@ head(fit2_all_genes)
 #    of genes to avoid false positives.
 #
 # 4. Exploratory visualization helps you understand patterns before modeling.
+#
+# 5. Volcano plots combine effect size and significance to quickly identify
+#    the most interesting differentially expressed genes.
+
+
+
+
+
+
+
