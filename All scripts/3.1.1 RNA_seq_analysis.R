@@ -124,6 +124,7 @@ d <- select(d, any_of(c("SampleID", "Cancertype")), any_of(genes_to_include))
 
 d <- d %>%
   pivot_longer(cols = -SampleID) %>%
+  rename(geneID = name) %>%
   group_by(SampleID) %>%
   mutate(
     sample_summed_counts_in_million = sum(value) / 1e6
@@ -226,7 +227,7 @@ d$Gender <- as.factor(d$Gender)
 # two cancer types.
 
 # First, let's look at a single gene: BRCA1
-tmp <- filter(d, name == "BRCA1")
+tmp <- filter(d, geneID == "BRCA1")
 
 # Visualize the expression difference:
 ggplot(tmp, aes(x = Study, y = logCPM)) +
@@ -292,7 +293,7 @@ fit2
 # Now let's test all genes for differential expression.
 # For each gene, we save the estimate, std.error, and p-value.
 
-genes <- unique(d$name)
+genes <- unique(d$geneID)
 head(genes)
 
 # Predefine model:
@@ -301,7 +302,7 @@ lm_form_fit <- linear_reg() %>%
 
 # Loop over all genes and store the coefficients:
 for (g in genes) {
-  tmp <- filter(d, name == g)
+  tmp <- filter(d, geneID == g)
   tmp_lm <- lm_form_fit %>%
     fit(logCPM ~ Study, data = tmp)
 
@@ -376,7 +377,7 @@ fit1_all_genes$q_value <- p.adjust(fit1_all_genes$p_value, method = "fdr")
 # Note: We adjust the coefficient extraction indices accordingly.
 
 for (g in genes) {
-  tmp <- filter(d, name == g)
+  tmp <- filter(d, geneID == g)
   tmp_lm <- lm_form_fit %>%
     fit(logCPM ~ Age + Gender + Study, data = tmp)
 
