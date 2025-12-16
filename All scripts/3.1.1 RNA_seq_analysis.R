@@ -124,7 +124,7 @@ d <- select(d, any_of(c("SampleID", "Cancertype")), any_of(genes_to_include))
 
 d <- d %>%
   pivot_longer(cols = -SampleID) %>%
-  group_by(name) %>%
+  group_by(SampleID) %>%
   mutate(
     sample_summed_counts_in_million = sum(value) / 1e6
   ) %>%
@@ -449,9 +449,9 @@ ggplot(fit1_all_genes, aes(x = Coefficient, y = neg_log10_q)) +
 
 # Optional: Highlight significant genes with color
 ggplot(fit1_all_genes, aes(x = Coefficient, y = neg_log10_q)) +
-  geom_point(aes(color = q_value < 0.05), alpha = 0.5) +
+  geom_point(aes(color = q_value < 0.005), alpha = 0.5) +
   scale_color_manual(values = c("grey50", "red"), labels = c("Not Sig.", "FDR < 0.05")) +
-  geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "red") +
+  geom_hline(yintercept = -log10(0.005), linetype = "dashed", color = "red") +
   labs(
     title = "Volcano Plot: Differential Expression (BRCA vs COAD)",
     x = "Log Fold-Change (Coefficient)",
