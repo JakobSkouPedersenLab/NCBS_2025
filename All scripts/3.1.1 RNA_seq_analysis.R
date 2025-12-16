@@ -61,25 +61,24 @@ ggplot(Summary_d, aes(x = n_above_0)) +
 genes_to_include = filter(Summary_d, n_above_0 > 0.25*ncol(d))$gene_id
 
 # Only keep genes which are in the genes_to_include list
-d = select(d, any_of(c("SampleID", "Sample_ID", "Cancertype")), any_of(genes_to_include))
+d = select(d, any_of(c("SampleID", "Cancertype")), any_of(genes_to_include))
 
 
 # C) 
 # How many genes are we looking at now?
 
-
-# To save space on the RAM, we will subset down to a random set of 200 genes
-set.seed(139)
-d = slice_sample(d, n = 200)
+# 
+# # To save space on the RAM, we will subset down to a random set of 200 genes
+# set.seed(139)
+# d = slice_sample(d, n = 200)
 
 # Now, let's perform normalization and transformation of the data (logCPM)
 # For each sample, we calculate the sum of reads in millions. 
 # To do this, we change the form of the data to 'long-format'.
 # Try to rread through each line of the code below and see if you can understand what it does.
 # Feel free to add comments by adding a hashtag at the end of each line, followed by your text
-d = 
-  d %>%
-  pivot_longer(cols = -gene_id) %>%
+d = d %>%
+  pivot_longer(cols = -SampleID) %>%
   group_by(name) %>%
   mutate(
     sample_summed_counts_in_million = sum(value) / 1e6
