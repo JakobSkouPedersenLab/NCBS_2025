@@ -22,7 +22,8 @@ d = dplyr::select(d, SampleID, Cancertype, everything()) %>%
 #Load metadata
 meta = read_delim("Data/TCGA_Metadata.tsv")
 meta = dplyr::rename(meta, SampleID = `Sample ID`) %>%
-  dplyr::select(SampleID, Study = `TCGA PanCanAtlas Cancer Type Acronym`, Age = `Diagnosis Age`, Gender = Sex, Type = `Sample Type`)
+  dplyr::select(SampleID, Study = `TCGA PanCanAtlas Cancer Type Acronym`, Age = `Study Age`, Gender = Sex, Type = `Sample Type`) %>%
+  filter(SampleID %in% d$SampleID)
 
 # How many samples do we have metadata for?
 table(d$SampleID %in% meta$SampleID) #Missing 43 — that is OK for now.
@@ -95,23 +96,18 @@ d$sample_summed_counts_in_million = NULL #We remove this column simply to clean 
 hist(d$logCPM)
 
 # D)
-# Why is their a peak around 2 which seems to stand out from the rest?
 
-# Let's add annotation of whether each sample came from a patient with tremor or not
-# To do this, we load the metadata
-meta = read_delim("Data/Metadata.tsv", delim = "\t")
-glimpse(meta)
+# Let's add the metadata annotation
+d = left_join(meta, d)
 
-d = left_join(d, meta, by = c("name" = "ID"))
-
-# Make a boxplot of the logCPM for the two different diagnosis groups
-ggplot(d, aes(x = diagnosis, y = logCPM)) + geom_boxplot()
+# Make a boxplot of the logCPM for the two different Study groups
+ggplot(d, aes(x = Study, y = logCPM)) + geom_boxplot()
 
 # E) What does this graph tell us?
 
 # Let's plot just two samples
-s1 = filter(d, name == "SRR9835803")
-s2 = filter(d, name == "SRR9835947")
+s1 = filter(d, SampleID == "TCGA-AA-3527-01")
+s2 = filter(d, SampleID == "TCGA-D8-A1JK-01")
 plot(s1$logCPM, s2$logCPM)
 
 # F) 
@@ -123,33 +119,33 @@ plot(s1$logCPM, s2$logCPM)
 # line using geom_smooth(method = "lm")
 
 # Let's export the formatted data so we can use it in part 2
-write.table(d, "Data/RNA_seq_filtered_and_formatted.tsv", sep ="\t", col.names = T, row.names = F)
+write.table(d, "Data/TCGA_RNA_seq_filtered_and_formatted.tsv", sep ="\t", col.names = T, row.names = F)
 
 ### PART 2 ####
 
 # Load the data (if you didnt go directly from PART 1)
-d <- read_delim("Data/RNA_seq_filtered_and_formatted.tsv")
+d <- read_delim("Data/TCGA_RNA_seq_filtered_and_formatted.tsv")
 
-# Fix the encoding of diagnosis and gender
-d$diagnosis = as.factor(d$diagnosis) #It's not strictly necessary, but good to ensure that R sees categorical values as factors
-d$gender = as.factor(d$gender)
+# Fix the encoding of Study and gender
+d$Study = as.factor(d$Study) #It's not strictly necessary, but good to ensure that R sees categorical values as factors
+d$Gender = as.factor(d$Gender)
 
 # Now, we will use linear models to find 
 # differentially expressed genes between essential tremor samples and controls
 
 # First, we compare tremor and control for a single gene
-tmp <- filter(d, gene_id == "ENSG00000158887.15")
+tmp <- filter(d, name == "BRCA1")
 
 # Let's see if we can visually see a difference
-ggplot(tmp, aes(x = diagnosis, y = logCPM))+
+ggplot(tmp, aes(x = Study, y = logCPM))+
   geom_boxplot()
 
 # A) 
 #Do you think the two boxplots are significantly shifted?
 
 # Let's test it using a t-test
-t_fit <- t.test(filter(tmp, diagnosis == "Control")$logCPM, 
-               filter(tmp, diagnosis != "Control")$logCPM )
+t_fit <- t.test(filter(tmp, Study == "BRCA")$logCPM, 
+               filter(tmp, Study != "BRCA")$logCPM )
 t_fit$p.value
 
 # In this case we could also simply to a wilcoxon test or a t-test as we just did. 
@@ -159,7 +155,7 @@ t_fit$p.value
 lm_form_fit <- 
   linear_reg() %>% 
   set_engine("lm")%>% 
-  fit(logCPM ~ diagnosis, data = tmp)
+  fit(logCPM ~ Study, data = tmp)
 
 fit1 <- tidy(lm_form_fit)
 fit1
@@ -175,17 +171,17 @@ fit1
 lm_form_fit <- 
   linear_reg() %>% 
   set_engine("lm")%>% 
-  fit(logCPM ~ age+gender+diagnosis, data = tmp)
+  fit(logCPM ~ Age+Gender+Study, data = tmp)
 
 fit2 = tidy(lm_form_fit)
 fit2
 
 
-# D) How would you interpret fit2, and why has the p-value of diagnosis changed?
+# D) How would you interpret fit2, and why has the p-value of Study changed?
 
 # Now, let's test across all the genes. 
 # For each gene, we save the estimate, std.error, and p-value
-genes = unique(d$gene_id) #List of all genes
+genes = unique(d$name) #List of all genes
 head(genes)
 
 #Predefine model:
@@ -195,9 +191,9 @@ lm_form_fit <-
 
 # Loop over all genes and store the model coefficients for each
 for(g in genes){
-  tmp = filter(d, gene_id == g)
+  tmp = filter(d, name == g)
   tmp_lm = lm_form_fit %>%
-    fit(logCPM ~ diagnosis, data = tmp)
+    fit(logCPM ~ Study, data = tmp)
   
   # Extract coefficients (could also be done using the tidy() function)
   tmp_summary = summary(tmp_lm$fit)
@@ -220,6 +216,7 @@ for(g in genes){
 }
 
 fit1_all_genes = out #Save the output in a new variable
+fit1_all_genes = arrange(fit1_all_genes, p_value)
 head(fit1_all_genes)
 
 # E)
@@ -251,7 +248,7 @@ fit1_all_genes$q_value = p.adjust(fit1_all_genes$p_value, method = "fdr")
 
 for(g in genes){
   tmp = filter(d, gene_id == g)
-  tmp_lm = lm_form_fit%>%fit(logCPM ~ age+gender+diagnosis, data = tmp)
+  tmp_lm = lm_form_fit%>%fit(logCPM ~ age+gender+Study, data = tmp)
   
   # Extract coefficients
   tmp_summary = summary(tmp_lm$fit)
