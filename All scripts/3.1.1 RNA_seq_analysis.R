@@ -14,13 +14,21 @@ library(tidymodels)
 ##### PART 1: Load data and do some visualisations ####
 # Load counts
 d <- readRDS("Data/TCGA_Formatted_data.rds")
-# = filter(d, Cancertype %in% c("BRCA", "COAD")) #Only keep two cancer types for speed
-#d = dplyr::select(d, -c(Cancertype)) #Remove cancer type column for now
+d = filter(d, Cancertype %in% c("BRCA", "COAD")) #We select two cancer types to do Diferential expression analysis between them 
+d = mutate(d, SampleID = str_sub(Sample, end = -14))
+d = dplyr::select(d, SampleID, Cancertype, everything()) %>%
+  dplyr::select(-c(Sample, Cancertype))
+
+#Load metadata
+meta = read_delim("Data/TCGA_Metadata.tsv")
+meta = dplyr::rename(meta, SampleID = `Sample ID`) %>%
+  dplyr::select(SampleID, Study = `TCGA PanCanAtlas Cancer Type Acronym`, Age = `Diagnosis Age`, Gender = Sex, Type = `Sample Type`)
+
+# How many samples do we have metadata for?
+table(d$SampleID %in% meta$SampleID) #Missing 43 — that is OK for now.
 
 
-d <- read_delim("Data/RNA_seq_counts.gtf", delim ="\t", col_names = T)
-
-# Check it out 
+# Check out the RNA read counts
 glimpse(d)
 
 # A) 
@@ -30,16 +38,20 @@ glimpse(d)
 # Reformat to long format and count the number of samples that had any expression of each gene
 Summary_d <-
   d%>%
-  pivot_longer(cols = -gene_id) %>%
-  group_by(gene_id) %>%
+  pivot_longer(cols = -SampleID) %>%
+  group_by(name) %>%
   mutate(n_above_0 = sum(value > 0)) %>%
-  distinct(gene_id, n_above_0) %>%
+  distinct(name, n_above_0) %>% 
+  dplyr::rename(gene_id = name) %>%
   ungroup()
 
 # Comment on each line above what it does,either in writing here or discussing it with someone
 
 # Visualize
-hist(Summary_d$n_above_0)
+ggplot(Summary_d, aes(x = n_above_0)) + 
+  geom_histogram() +
+  theme_minimal() +
+  geom_rug(sides = "b")
 
 
 # B) 
@@ -47,7 +59,9 @@ hist(Summary_d$n_above_0)
 
 # Let's only look at  genes that have an expression in at least 25% of the samples:
 genes_to_include = filter(Summary_d, n_above_0 > 0.25*ncol(d))$gene_id
-d = filter(d, gene_id %in% genes_to_include)
+
+# Only keep genes which are in the genes_to_include list
+d = select(d, any_of(c("SampleID", "Sample_ID", "Cancertype")), any_of(genes_to_include))
 
 
 # C) 
