@@ -26,8 +26,6 @@ library(tidymodels)
 # Load the TCGA formatted expression data:
 d <- readRDS("Data/TCGA_Formatted_data.rds")
 
-# We select two cancer types to compare (Breast Cancer vs. Colorectal Adenocarcinoma):
-d <- filter(d, Cancertype %in% c("BRCA", "COAD"))
 
 # Clean the Sample ID (remove extra characters):
 d <- mutate(d, SampleID = str_sub(Sample, end = -14))
@@ -38,17 +36,6 @@ d <- dplyr::select(d, SampleID, Cancertype, everything()) %>%
 
 # Load the metadata file:
 meta <- read_delim("Data/TCGA_Metadata.tsv")
-
-# Clean column names and select relevant metadata variables:
-meta <- dplyr::rename(meta, SampleID = `Sample ID`) %>%
-  dplyr::select(
-    SampleID,
-    Study  = `TCGA PanCanAtlas Cancer Type Acronym`,
-    Age    = `Diagnosis Age`,
-    Gender = Sex,
-    Type   = `Sample Type`
-  ) %>%
-  filter(SampleID %in% d$SampleID)
 
 # How many samples do we have metadata for?
 table(d$SampleID %in% meta$SampleID)
