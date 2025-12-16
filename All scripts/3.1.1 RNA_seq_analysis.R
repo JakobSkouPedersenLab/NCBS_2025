@@ -13,6 +13,11 @@ library(tidymodels)
 
 ##### PART 1: Load data and do some visualisations ####
 # Load counts
+d <- readRDS("Data/TCGA_Formatted_data.rds")
+# = filter(d, Cancertype %in% c("BRCA", "COAD")) #Only keep two cancer types for speed
+#d = dplyr::select(d, -c(Cancertype)) #Remove cancer type column for now
+
+
 d <- read_delim("Data/RNA_seq_counts.gtf", delim ="\t", col_names = T)
 
 # Check it out 
