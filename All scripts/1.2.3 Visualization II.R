@@ -147,7 +147,7 @@ bp_plot +
 
 # Try it with month too:
 bp_plot + 
-  geom_point(aes(color = month)) +
+  geom_point(aes(color = ?)) +
   scale_colour_brewer(palette = "Paired")
 
 ################################################################################
@@ -231,7 +231,7 @@ my_facet_plot
 # See R4DS section 2.5.2 for guidance
 
 ggplot(chd_data, aes(x = sex, fill = chdfate)) + 
-  geom_bar(position = "fill") +
+  geom_bar(?) +
   ylab("Proportion") +
   ggtitle("Proportion of Heart Disease by Sex")
 
