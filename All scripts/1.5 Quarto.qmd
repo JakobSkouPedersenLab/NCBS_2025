@@ -37,7 +37,7 @@ Remember to refer to the **Quarto** cheat sheet and the [**Quarto guide**](https
 ## Quarto exercises part II
 
 1. Make a simple table by hand
-2. Make kable table with the first 10 lines of the chd_500 data set (Hint: use ?kable to get help. Remember to load the kable package before using it in your script). 
+2. Make a kable table with the first 10 lines of the chd_500 data set (Hint: use ?kable to get help. Remember to load the kable package before using it in your script). 
     - Remove variables if tables becomes too wide to fit.
 3. Make a mermaid (or graphviz) [diagram](https://quarto.org/docs/authoring/diagrams.html) with boxes representing, e.g., your genealogy.
 4. Add a table of contents by modifying the YAML header (see the cheat sheet).

@@ -54,11 +54,11 @@ chd_split <- initial_split(data = ?, prop = 3/4, strata = chdfate)
 
 # EXERCISE A: Create training and testing datasets
 chd_train <- training(chd_split)
-chd_test <- testing(chd_split)  # Replace ? with 'chd_split'
+chd_test <- testing(?)  # Replace ? with 'chd_split'
 
-# Verify the split maintains class balance:
+# Verify the split maintains class balance (replace ? with 'chdfate'):
 chd_train %>% count(chdfate) %>% mutate(prop = n/sum(n))
-chd_test %>% count(chdfate) %>% mutate(prop = n/sum(n))
+chd_test %>% count(?) %>% mutate(prop = n/sum(n))
 
 ################################################################################
 #### SECTION 4: Data Preprocessing with Recipes ####
@@ -108,10 +108,6 @@ glimpse(chd_test_baked)
 # This is one-hot encoding from step_dummy()
 
 
-# Your answer:
-# 
-
-
 ################################################################################
 #### PART 2: Model Building and Training ####
 ################################################################################
@@ -141,7 +137,7 @@ lr_model <-
 chd_workflow <- 
   workflow() %>% 
   add_model(lr_model) %>% 
-  add_recipe(chd_rec)  # We use the un-baked recipe
+  add_recipe(?)  # We use the un-baked recipe object from above
 
 chd_workflow
 
@@ -365,7 +361,7 @@ test_accuracy
 ################################################################################
 
 # 1. Classification predicts categories, not continuous values
-# 2. Logistic regression outputs probabilities (0 to 1)
+# 2. Logistic regression outputs class probabilities (0 to 1)
 # 3. Recipes ensure consistent preprocessing
 # 4. Workflows combine preprocessing and modeling elegantly
 # 5. ROC curves and AUC measure classification performance

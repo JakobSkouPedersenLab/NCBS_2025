@@ -71,7 +71,8 @@ summary(pca_result)
 
 # The augment() function adds PCA coordinates back to the original data
 depmap_with_pca <- augment(pca_result, depmap_data)
-glimpse(depmap_with_pca)
+# fill in the question mark with the name of the new dataframe output by augment()
+glimpse(?) 
 
 # Note: New columns .fittedPC1, .fittedPC2, etc. contain the PC coordinates
 
@@ -117,11 +118,12 @@ variance_explained
 # Line 1 (data.frame): ?
 # Line 2 (PC =): ?
 # Line 3 (variance =): ?
-# Line 4 (mutate): ?
+# Line 3+2 (mutate): ?
 
-# EXERCISE C: Create a bar plot showing variance explained by each PC
+# EXERCISE C: Create a bar plot showing variance explained by each PC.
+# (hint: use stat = "identity" as argument to the geom_bar() function)
 ggplot(variance_explained, aes(x = PC, y = proportion_variance)) +
-  geom_bar(stat = "identity") +
+  geom_bar(?) +
   labs(title = "Variance Explained by Each Principal Component",
        y = "Proportion of Variance Explained")
 
@@ -131,7 +133,7 @@ ggplot(variance_explained, aes(x = PC, y = proportion_variance)) +
 variance_explained <- variance_explained %>%
   mutate(accumulated_variance = cumsum(proportion_variance))
 
-# Exercise D: Create a bar plot showingthe accumulated variance explained by PCs
+# Exercise D: Create a bar plot showing the accumulated variance explained by PCs
 ggplot(variance_explained, aes(x = PC, y = accumulated_variance)) +
   geom_bar(stat = "identity") +
   labs(title = "Variance Explained by Each Principal Component",
@@ -142,15 +144,17 @@ ggplot(variance_explained, aes(x = PC, y = accumulated_variance)) +
 #### SECTION 6: Another Look at the PCA Plot ####
 ################################################################################
 
-# EXERCISE D: Create another PCA plot (PC1 vs PC2) colored by lineage_1
+# EXERCISE D: Create some more PCA plots (PC1 vs PC2; PC1 vs PC3; etc.) colored by lineage_1
 # This is similar to Exercise A - good practice!
 ggplot(depmap_with_pca, aes(x = ?, y = ?, color = ?)) +
   geom_point(size = 2, alpha = 0.6) +
   labs(title = "PCA: Looking for cancer lineage")
 
 # EXERCISE E: Interpret the plot
-# Does PCA separate patients by the lineage of their cancer? Does it work for all?
-# Write your observations as a comment below:
+# a. Does PCA separate patients by the lineage of their cancer? 
+# b. Which PC combinations work best, among those you tried.
+# c. Are all lineages separated?
+# d. Write your observations as a comment below:
 # 
 
 
@@ -243,11 +247,13 @@ ggplot(tsne_plot_data, aes(x = tsne_x, y = tsne_y, color = ?)) +
 
 # PCA vs t-SNE:
 # - PCA: Linear, fast, interpretable, good for initial exploration
-# - t-SNE: Non-linear, slower, better at revealing clusters
+# - t-SNE: Non-linear, distances not directly interpretable, slower, 
+# better at revealing clusters
 # 
 # When to use each:
 # - PCA: Understanding which variables contribute most, quick exploration
 # - t-SNE: Finding hidden clusters, visualizing complex patterns, 
 # distances not directly interpretable
-# 
-# Best practice: Often use PCA first, then t-SNE for deeper investigation
+#
+# Best practice: Often use PCA first, then t-SNE, depending on the question 
+# and dataset size.

@@ -115,7 +115,7 @@ chd_split  # Split information
 ################################################################################
 
 # Danish saying: "tegne før regne" (draw before you calculate!)
-# Always visualize your data before modeling!
+# Always visualize and understand your data before modeling!
 
 # Get all variable names except the first one (id):
 var_names <- names(chd_train)[-1]
@@ -166,7 +166,7 @@ chd_train %>%
 
 # LINEAR REGRESSION BASICS:
 # We're predicting a continuous outcome (BMI) from other variables.
-# The formula: BMI = β₀ + β₁×sbp + β₂×sex + ε
+# The formula used below is: BMI = β₀ + β₁×sbp + β₂×sex + ε
 # 
 # Note: chdfate is binary (TRUE/FALSE), so we'll start with BMI as our target.
 # We'll get to binary classification later!
